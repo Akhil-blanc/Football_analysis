@@ -23,6 +23,10 @@ To run the scripts, you will need to have R installed on your machine. You can t
 
 For the Shiny application, you will need to have the Shiny library installed in R. You can then run the application using the command `shiny::runApp()` in the R console.
 
+## GitHub link
+
+You can find the repository at [Football_analysis](https://github.com/Akhil-blanc/Football_analysis).
+
 ## Dependencies
 
 These scripts depend on several R packages, including `dplyr`, `RcppRoll`, `ggplot2`, `ggtext`, `devtools`, and `understatr`. Please ensure these packages are installed before running the scripts.
@@ -30,4 +34,9 @@ These scripts depend on several R packages, including `dplyr`, `RcppRoll`, `ggpl
 ## Data Sources
 
 The data used in these scripts is sourced from Understat and FBref via StatsBomb, and WorldFootballR.
+
+## Team members
+Project done by:
+- Pechetti Sai Akhil (B21AI025)
+- Prashant Tandon (B21AI053)
 
