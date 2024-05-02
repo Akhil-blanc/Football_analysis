@@ -73,54 +73,54 @@ data <- data %>%
 
 # FBref (via StatsBomb)
 
-dat1 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2018, tier = "1st")
-dat2 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2019, tier = "1st")
-dat3 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2020, tier = "1st")
-dat4 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2021, tier = "1st")
-dat5 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2022, tier = "1st")
+# dat1 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2018, tier = "1st")
+# dat2 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2019, tier = "1st")
+# dat3 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2020, tier = "1st")
+# dat4 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2021, tier = "1st")
+# dat5 <- get_match_results(country = "ENG", gender = "M", season_end_year = 2022, tier = "1st")
 
-dat5 <- dat5[c(1:65), ]
-data <- rbind(dat1, dat2, dat3, dat4, dat5)
+# dat5 <- dat5[c(1:65), ]
+# data <- rbind(dat1, dat2, dat3, dat4, dat5)
 
-df1 <- data %>%
-  filter(Home == "Manchester Utd")
-df1 <- df1[, c("Date","Home", "Home_xG")]
-df1 <- df1 %>%
-  rename(xG = Home_xG) %>%
-  rename(Team = Home)
-df2 <- data %>%
-  filter(Away == "Manchester Utd")
-df2 <- df2[, c("Date","Away", "Away_xG")]
-df2 <- df2 %>%
-  rename(xG = Away_xG) %>%
-  rename(Team = Away)
-df <- rbind(df1, df2)
+# df1 <- data %>%
+#   filter(Home == "Manchester Utd")
+# df1 <- df1[, c("Date","Home", "Home_xG")]
+# df1 <- df1 %>%
+#   rename(xG = Home_xG) %>%
+#   rename(Team = Home)
+# df2 <- data %>%
+#   filter(Away == "Manchester Utd")
+# df2 <- df2[, c("Date","Away", "Away_xG")]
+# df2 <- df2 %>%
+#   rename(xG = Away_xG) %>%
+#   rename(Team = Away)
+# df <- rbind(df1, df2)
 
-df3 <- data %>%
-  filter(Home == "Manchester Utd")
-df3 <- df3[, c("Date","Away", "Away_xG")]
-df3 <- df3 %>%
-  rename(xGA = Away_xG) %>%
-  rename(Team = Away)
-df4 <- data %>%
-  filter(Away == "Manchester Utd")
-df4 <- df4[, c("Date","Home", "Home_xG")]
-df4 <- df4 %>%
-  rename(xGA = Home_xG) %>%
-  rename(Team = Home)
-dfa <- rbind(df3, df4)
-dfa <- dfa[, 3]
-data <- cbind(df, dfa)
-data <- data %>%
-  rename(xGA = dfa) %>%
-  mutate(xGSUM = (xG + xGA)/2)
+# df3 <- data %>%
+#   filter(Home == "Manchester Utd")
+# df3 <- df3[, c("Date","Away", "Away_xG")]
+# df3 <- df3 %>%
+#   rename(xGA = Away_xG) %>%
+#   rename(Team = Away)
+# df4 <- data %>%
+#   filter(Away == "Manchester Utd")
+# df4 <- df4[, c("Date","Home", "Home_xG")]
+# df4 <- df4 %>%
+#   rename(xGA = Home_xG) %>%
+#   rename(Team = Home)
+# dfa <- rbind(df3, df4)
+# dfa <- dfa[, 3]
+# data <- cbind(df, dfa)
+# data <- data %>%
+#   rename(xGA = dfa) %>%
+#   mutate(xGSUM = (xG + xGA)/2)
 
-data <- data[order(as.Date(data$Date),decreasing = FALSE),]
-data <- data %>%
-  mutate(Round = 1:nrow(data),
-         xGSM = TTR::SMA(xG, n = 10),
-         xGASM = TTR::SMA(xGA, n = 10),
-         xGSUM = TTR::SMA(xGSUM, n = 10))
+# data <- data[order(as.Date(data$Date),decreasing = FALSE),]
+# data <- data %>%
+#   mutate(Round = 1:nrow(data),
+#          xGSM = TTR::SMA(xG, n = 10),
+#          xGASM = TTR::SMA(xGA, n = 10),
+#          xGSUM = TTR::SMA(xGSUM, n = 10))
 
 # Plotting
 

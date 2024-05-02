@@ -2,7 +2,7 @@
 library(shiny)
 
 # Get a list of all R scripts in the current directory
-plot_files <- list.files(pattern = "Finishing Variance Line.R")
+plot_files <- list.files(pattern = "Dumbell_Chart.R")
 
 # Create a UI for the application
 ui <- fluidPage(

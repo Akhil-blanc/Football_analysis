@@ -9,6 +9,7 @@ library(glue)
 # Data 
 print("scrapping data")
 data <- fb_big5_advanced_season_stats(season_end_year = 2022, stat_type = "standard", team_or_player = "player")
+write.csv(data, "data55.csv")
 print("data scrapped")
 # Data Wrangling 
 

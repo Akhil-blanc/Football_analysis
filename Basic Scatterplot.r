@@ -1,62 +1,89 @@
-# Basic Scatterplot
-
-# Libraries
-
+# Load necessary libraries
+library(shiny)
 library(worldfootballR)
 library(tidyverse)
 library(ggtext)
 library(ggrepel)
 library(extrafont)
 
-# Scraping
-print("Scraping Data")
-data <- fb_big5_advanced_season_stats(season_end_year= 2022, stat_type= "gca", team_or_player= "player")
-print("Data Scraped")
-print(colnames((data)))
-# Manipulation
+# Define UI
+ui <- fluidPage(
+  tags$style(HTML("
+    body {
+      background-color: black;
+      color: white;
+    }
+    .well {
+      background-color: black;
+    }
+    .selectize-input {
+      color: black;
+      background-color: black;
+    }
+    .selectize-dropdown {
+      color: white;
+      background-color: black;
+    }
+    .main-header {
+      text-align: center;
+    }
+  ")),
+  
+      # titlePanel("Shot Creating Actions"),
+  
+  # Layout with columns
+  fluidRow(
+    column(width = 3,  # Adjust this value to change the sidebar width
+      wellPanel(
+        selectInput("season", "Select Season Year:",
+                    choices = c("2019", "2020", "2021", "2022", "2023"),
+                    selected = "2019"),
+      selectInput("position", "Select Position:",
+            choices = c("FW", "MF", "DF", "FW,MF"),
+            selected = "FW"),
+      sliderInput("threshold", "Minimum 90's Played:",
+                  min = 7, max = 38, value = 20)
+      )
+    ),
+    column(width = 9,  # Adjust this value to change the main panel width
+      plotOutput("scatterplot", height = "900px", width = "1000px")
+    )
+  )
+)
 
-data <- data %>%
-filter(Mins_Per_90 >= 7) %>%
-filter(Pos == "FW" | Pos == "FW,MF") %>%
-mutate(Dribble = Sh_SCA/Mins_Per_90) %>%
-mutate(Total = SCA_SCA/Mins_Per_90)
+# Define server logic
+server <- function(input, output) {
+  
+  data <- reactive({
+      file_path <- paste0("scatter_data/scatter_data_", input$season, ".csv")
+      data <- read.csv(file_path)
+      return(data)
+      })
 
-# Custom theme function
-
-theme_athletic <- function() {
-  theme_minimal() +
-    theme(plot.background = element_rect(colour = "#151515", fill = "#151515"),
-          panel.background = element_rect(colour = "#151515", fill = "#151515")) +
-    theme(plot.title = element_text(colour = "white", size = 24, family = "Fried Chicken Bold", hjust = 0.5),
-          plot.subtitle = element_markdown(colour = "white", size = 18, hjust = 0.5),
-          plot.caption = element_text(colour = "white", size = 15, hjust = 1),
-          axis.title.x = element_text(colour = "white", face = "bold", size = 14),
-          axis.title.y = element_text(colour = "white", face = "bold", size = 14),
-          axis.text.x = element_text(colour = "white", size = 12),
-          axis.text.y = element_text(colour = "white", size = 12)) +
-    theme(panel.grid.major = element_line(colour = "#525252", size = 0.7, linetype = "dashed"),
-          panel.grid.minor = element_line(colour = "#525252", size = 0.7, linetype = "dashed")) +
-    theme(panel.grid.major.x = element_line(colour = "#525252", size = 0.7, linetype = "dashed"),
-          panel.background = element_blank()) +
-    theme(legend.title = element_text(colour = "white"),
-          legend.text = element_text(colour = "white"))
+ 
+  # Create scatterplot
+  output$scatterplot <- renderPlot({
+    data_filtered <- data() %>%
+      filter(Mins_Per_90 >= input$threshold) %>%
+      filter(Pos == input$position) %>%
+      mutate(Dribble = Sh_SCA/Mins_Per_90) %>%
+      mutate(Total = SCA_SCA/Mins_Per_90)
+    
+    ggplot(data_filtered) +
+      geom_point(aes(x = Total, y = Dribble), colour = "#4292c6", size = 3) +
+      geom_point(data = data_filtered[111, ], aes(x = Total, y = Dribble), colour = "#fc9272", size = 9) +
+      geom_text_repel(aes(x = Total, y = Dribble, label = Player),
+                      box.padding   = 0.35, 
+                      point.padding = 1.5,
+                      segment.color = "black",
+                      colour = "white", 
+                      alpha = 1) +
+      labs(title = "Shot Creating Actions",
+           subtitle = paste("Forwards | Big 5 Leagues", input$season, "/", as.numeric(input$season) + 1, " | Minimum 20 90's played"),
+           caption = "Data from FBref") +
+      theme_athletic()
+  })
 }
 
-# Plotting 
-
-ggplot() +
-geom_point(data = data, aes(x = Total, y = Dribble), colour = "#4292c6", size = 3) +
-geom_point(data = data[111, ], aes(x = Total, y = Dribble), colour = "#fc9272", size = 9) +
-geom_text_repel(data = data, aes(x = Total, y = Dribble, label = Player),
-                   box.padding   = 0.35, 
-                   point.padding = 1.5,
-                   segment.color = "black",
-                   colour = "white", 
-                   alpha = 1) +
-                   labs(title = "Shot Creating Actions",
-                   subtitle = "Forwards | Big 5 Leagues 2021/22 | Minimum 7 90's played",
-                   caption = "Data from FBref") +
-                   theme_athletic()
-
-# Saving
-ggsave("Basic Scatterplot.png", width = 10, height = 8, dpi = 300)
+# Run the application
+shinyApp(ui = ui, server = server)

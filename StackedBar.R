@@ -9,6 +9,7 @@ library(MetBrewer)
 library(ggpubr)
 library(future)
 library(purrr)
+library(plotly)
 
 # # Set up parallel processing
 # plan(multisession)
@@ -184,5 +185,5 @@ caption = "Data from Understat")
 
 # Save
 
-setwd("C:/Users/91934/Documents/GitHub/R-Code")
+# setwd("C:/Users/91934/Documents/GitHub/R-Code")
 ggsave("bar1.png", width = 4000, height = 2000, units = "px")
