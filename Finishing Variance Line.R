@@ -12,6 +12,8 @@ library(understatr)
 
 # Data extraction & manipulation
 
+
+
 data <- get_player_shots(755)
 data <- data %>%
     filter(!situation == "Penalty")

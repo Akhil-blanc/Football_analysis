@@ -38,7 +38,7 @@ dumbell_ui <- fluidPage(
     ),
     mainPanel(
       width = 9,
-      plotOutput("dumbbellPlot", height = "900px", width = "1000px")
+      plotOutput("dumbbellPlot", height = "900px")
     )
   )
 )
@@ -47,7 +47,7 @@ dumbell_ui <- fluidPage(
 dumbell_server <- function(input, output, session) {
   output$dumbbellPlot <- renderPlot({
     # Data retrieval
-    filename <- paste0("league_data/",input$country, "_", input$gender, "_", input$season_end_year, "_", input$tier, "_league_table.csv")
+    filename <- paste0("data/league_data/",input$country, "_", input$gender, "_", input$season_end_year, "_", input$tier, "_league_table.csv")
     league_table <- read.csv(filename)
 
     competition_name <- league_table[,c(1)]

@@ -15,13 +15,20 @@ library(ggbraid)
 
 # UI
 
-ui <- fluidPage(
+finishing_ui <- fluidPage(
+  tags$head(tags$style(HTML("
+  .selectize-input, .selectize-dropdown {
+    background-color: black !important;
+    color: white !important;
+  }
+"))),
+  
   setBackgroundColor("#14171A"),
   titlePanel(div("Player Finishing Overview", style = "color:#D81B60"), windowTitle = "Player Finishing Overview"),
-  setSliderColor("#D81B60", 1),
+  # setSliderColor("#D81B60", 1),
   sidebarLayout(
     sidebarPanel(
-      numericInput("player", "Understat Player ID:", value = 3294),
+      textInput("player", "Enter Player Name", value = "Lionel Messi"),
       selectizeInput("situation", "Situation:", choices = c("OpenPlay", "DirectFreekick", "FromCorner", "SetPiece", "Penalty"), multiple = TRUE, selected = c("OpenPlay", "DirectFreekick", "FromCorner", "SetPiece", "Penalty")),
       selectizeInput("shotType", "Shot Type:", choices = c("LeftFoot", "RightFoot", "Head", "OtherBodyPart"), multiple = TRUE, selected = c("LeftFoot", "RightFoot", "Head", "OtherBodyPart")),
       sliderInput("year", "Year:",
@@ -34,26 +41,29 @@ ui <- fluidPage(
       radioButtons("theme", "Background Theme:", choices = c("Dark", "Light"), selected = "Dark"),
       downloadButton("download", "Download Plot")
     ),
-    mainPanel(h2("Introduction & Plot", align = "center", style = "color:white"),
-              h4("This simple Shiny app generates a dashboard of visualizations that can be useful in getting an overview of a soccer player's finishing ability. Play around with the options for customizations and try to gain interesting insights!", style = "color:white"),
-              h5("Created by Harsh Krishna (@veryharshtakes)", style = "color:white"),
-              plotOutput("plot"))
+    mainPanel(plotOutput("plot", height = "800px"))
   )
 )
 
 # Server
 
-server <- function(input, output, session) {
+finishing_server <- function(input, output) {
   
   plot_fun <- reactive({
     
     # Data
-    
+    player_names <- read.csv("data/player_name.csv")
+
+    get_player_id <- function(player_name) {
+      player_id <- player_names$id[player_names$player_name == player_name]
+      return(player_id)
+    }
+
     req(input$player)
     req(input$roll_avg)
     
     dataset <- reactive({
-      data <- get_player_shots(input$player)
+      data <- get_player_shots(get_player_id(input$player))
     }) %>%
       bindCache(input$player)
     
@@ -153,7 +163,7 @@ server <- function(input, output, session) {
               axis.text.y = element_blank(),
               axis.ticks.x = element_blank(),
               axis.ticks.y = element_blank(),
-              aspect.ratio = 0.5) 
+            ) 
     } else if(input$shots == "Hexbin") {
       g2 <- ggplot() +
         annotate_pitch(dimensions = pitch_statsbomb, fill = fill_b, colour = colorLine) +
@@ -172,7 +182,7 @@ server <- function(input, output, session) {
               axis.text.y = element_blank(),
               axis.ticks.x = element_blank(),
               axis.ticks.y = element_blank(),
-              aspect.ratio = 0.5)
+              )
     }
     
     g3 <- ggplot() +
@@ -188,16 +198,16 @@ server <- function(input, output, session) {
     
     if ("All" %in% input$plots) {
       
-      my_plot <- g1 / (g2 | g3)
+      my_plot <- g1 / g2 / g3
       my_plot &
-        plot_annotation(caption = "Created by @veryharshtakes",
+        plot_annotation(,
                         theme = theme(plot.background = element_rect(fill = fill_b, colour = fill_b),
                                       plot.caption = element_text(colour = colorText, hjust = 1, size = 10)))
       
     } else if ("Line Chart" %in% input$plots) {
       
       g1 &
-        plot_annotation(caption = "Created by @veryharshtakes",
+        plot_annotation(
                         theme = theme(plot.background = element_rect(fill = fill_b, colour = fill_b),
                                       plot.caption = element_text(colour = colorText, hjust = 1, size = 10)))
       
@@ -205,7 +215,7 @@ server <- function(input, output, session) {
       
       g2 +
         theme(axis.title.y = element_blank()) &
-        plot_annotation(caption = "Created by @veryharshtakes",
+        plot_annotation(
                         title = glue("{data$player}"), subtitle = glue("{input$year[1]} - {input$year[2]} | League Games Only"),
                         theme = theme(plot.background = element_rect(fill = fill_b, colour = fill_b),
                                       plot.caption = element_text(colour = colorText, hjust = 1, size = 10),
@@ -215,7 +225,7 @@ server <- function(input, output, session) {
     } else if ("Histogram" %in% input$plots) {
       
       g3 &
-        plot_annotation(caption = "Created by @veryharshtakes",
+        plot_annotation(
                         title = glue("{data$player}"), subtitle = glue("{input$year[1]} - {input$year[2]} | League Games Only"),
                         theme = theme(plot.background = element_rect(fill = fill_b, colour = fill_b),
                                       plot.caption = element_text(colour = colorText, hjust = 1, size = 10),
@@ -242,4 +252,4 @@ server <- function(input, output, session) {
   )
 }
 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = finishing_ui, server = finishing_server)

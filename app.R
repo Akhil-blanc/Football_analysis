@@ -1,36 +1,47 @@
-# Load required libraries
 library(shiny)
+library(tidyverse)
+library(ggplot2)
+library(ggtext)
+library(extrafont)
+library(ggalt)
 
-# Get a list of all R scripts in the current directory
-plot_files <- list.files(pattern = "Dumbell_Chart.R")
+# Source app1.R
+source("Waffle.R")
 
-# Create a UI for the application
+# Source app2.R
+source("Dumbell_Chart.R")
+
+source("StackedBar.R")
+
+source("Alluvial.R")
+
+source("Basic Scatterplot.R")
+
+source("Player_Finishing.R")
+
+# Define combined UI
 ui <- fluidPage(
-    # Input for parameters
-    textInput("param", "Enter parameter:"),
-    
-    # Create a tabset
-    do.call(tabsetPanel,
-        # Use lapply to create a tabPanel for each plot
-        lapply(plot_files, function(file) {
-            tabPanel(file,
-                plotOutput(file)
-            )
-        })
-    )
+  titlePanel("FootyViz - One Stop Shop for Football Visualizations"),
+  tabsetPanel(
+    tabPanel("Player Stats", finishing_ui),
+    tabPanel("Dumbell Chart", dumbell_ui),
+    tabPanel("Stacked Bar Chart", stackedbar_ui),
+    tabPanel("Alluvial Chart", alluvial_ui),
+    tabPanel("Waffle Chart", waffle_ui),
+    tabPanel("Basic Scatterplot", scatter_ui),
+  )
 )
 
-# Define server logic
+# Define combined server
 server <- function(input, output) {
-    # Use lapply to create a renderPlot for each plot
-    lapply(plot_files, function(file) {
-        output[[file]] <- renderPlot({
-            # Source the R script for the plot, passing in the parameter
-            source(file, local = TRUE)
-            generate_plot()
-        })
-    })
+  waffle_server(input, output)
+  dumbell_server(input, output)
+  stackedbar_server(input, output)
+  alluvial_server(input, output)
+  scatter_server(input, output)
+  finishing_server(input, output)
+
 }
 
-# Run the application 
+# Run the combined app
 shinyApp(ui = ui, server = server)

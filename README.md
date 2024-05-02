@@ -29,11 +29,34 @@ You can find the repository at [Football_analysis](https://github.com/Akhil-blan
 
 ## Dependencies
 
-These scripts depend on several R packages, including `dplyr`, `RcppRoll`, `ggplot2`, `ggtext`, `devtools`, and `understatr`. Please ensure these packages are installed before running the scripts.
+These scripts depend on several R packages, including`tidyverse`      `worldfootballR` `ggalluvial`     `extrafont`     
+`ggtext`         `MetBrewer`      `shiny`          `ggplot2`       
+`ggalt`          `ggforce`        `ggrepel`        `grid`
+`ggplotify`      `cowplot`        `ggshakeR`       `StatsBombR`
+`dplyr`          `RcppRoll`       `devtools`       `understatr`
+`glue`           `ggsoccer`       `TTR`            `patchwork`
+`hexbin`         `shinyWidgets`   `ggbraid`        `ggpubr`        
+`future`         `purrr`          `plotly`         `viridis`
+`waffle`. Please ensure these packages are installed before running the scripts.
+#### For general packages:
+```
+install.packages("<package_name>")
+```
+
+#### For ggbraid and other packages that show an error - install from github:
+
+```
+install.packages("remotes")
+```
+```
+remotes::install_github("nsgrantham/ggbraid")
+```
 
 ## Data Sources
 
 The data used in these scripts is sourced from Understat and FBref via StatsBomb, and WorldFootballR.
+- The data is saved as csv files in the [data](data) directory.
+- [scrape_data.R](scrape_data.R) is an example file demonstrating data scraping.
 
 ## Team members
 Project done by:

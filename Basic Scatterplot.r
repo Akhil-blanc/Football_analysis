@@ -7,7 +7,7 @@ library(ggrepel)
 library(extrafont)
 
 # Define UI
-ui <- fluidPage(
+scatter_ui <- fluidPage(
   tags$style(HTML("
     body {
       background-color: black;
@@ -35,13 +35,13 @@ ui <- fluidPage(
   fluidRow(
     column(width = 3,  # Adjust this value to change the sidebar width
       wellPanel(
-        selectInput("season", "Select Season Year:",
+        selectInput("scatter_season", "Select Season Year:",
                     choices = c("2019", "2020", "2021", "2022", "2023"),
                     selected = "2019"),
-      selectInput("position", "Select Position:",
+      selectInput("scatter_position", "Select Position:",
             choices = c("FW", "MF", "DF", "FW,MF"),
             selected = "FW"),
-      sliderInput("threshold", "Minimum 90's Played:",
+      sliderInput("scatter_threshold", "Minimum 90's Played:",
                   min = 7, max = 38, value = 20)
       )
     ),
@@ -52,10 +52,10 @@ ui <- fluidPage(
 )
 
 # Define server logic
-server <- function(input, output) {
+scatter_server <- function(input, output) {
   
   data <- reactive({
-      file_path <- paste0("scatter_data/scatter_data_", input$season, ".csv")
+      file_path <- paste0("data/scatter_data/scatter_data_", input$scatter_season, ".csv")
       data <- read.csv(file_path)
       return(data)
       })
@@ -64,8 +64,8 @@ server <- function(input, output) {
   # Create scatterplot
   output$scatterplot <- renderPlot({
     data_filtered <- data() %>%
-      filter(Mins_Per_90 >= input$threshold) %>%
-      filter(Pos == input$position) %>%
+      filter(Mins_Per_90 >= input$scatter_threshold) %>%
+      filter(Pos == input$scatter_position) %>%
       mutate(Dribble = Sh_SCA/Mins_Per_90) %>%
       mutate(Total = SCA_SCA/Mins_Per_90)
     
@@ -79,11 +79,11 @@ server <- function(input, output) {
                       colour = "white", 
                       alpha = 1) +
       labs(title = "Shot Creating Actions",
-           subtitle = paste("Forwards | Big 5 Leagues", input$season, "/", as.numeric(input$season) + 1, " | Minimum 20 90's played"),
+           subtitle = paste("Forwards | Big 5 Leagues", input$scatter_season, "/", as.numeric(input$scatter_season) + 1, " | Minimum 20 90's played"),
            caption = "Data from FBref") +
       theme_athletic()
   })
 }
 
 # Run the application
-shinyApp(ui = ui, server = server)
+shinyApp(ui = scatter_ui, server = scatter_server)

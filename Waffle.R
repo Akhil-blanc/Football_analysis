@@ -79,7 +79,7 @@ waffle_ui <- fluidPage(
 waffle_server <- function(input, output) {
   
   data <- reactive({
-    file_path <- paste0("scatter_data/scatter_data_", input$season, ".csv")
+    file_path <- paste0("data/scatter_data/scatter_data_", input$season, ".csv")
     data <- read.csv(file_path)
     return(data)
   })
@@ -138,7 +138,7 @@ waffle_server <- function(input, output) {
       subtitle = paste("Top", input$top_players, "Players with the most SCA per 90 so far"),
       caption = "Minimum 9 90's Played\nData from FBref") +
       theme_athletic() +
-      theme(aspect.ratio = 1,
+      theme(
             strip.background = element_blank(),
             strip.text = element_text(colour = "white", size = 14),
             legend.position = "top",
