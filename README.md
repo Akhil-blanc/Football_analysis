@@ -53,7 +53,6 @@ remotes::install_github("nsgrantham/ggbraid")
 ```
 
 ## Data Sources
-
 The data used in these scripts is sourced from Understat and FBref via StatsBomb, and WorldFootballR.
 - The data is saved as csv files in the [data](data) directory.
 - [scrape_data.R](scrape_data.R) is an example file demonstrating data scraping.
@@ -63,3 +62,6 @@ Project done by:
 - Pechetti Sai Akhil (B21AI025)
 - Prashant Tandon (B21AI053)
 
+## License
+- Original work by: [harshkrishna17](https://github.com/harshkrishna17)
+- We've adapted and aggregated to make a singular app.
